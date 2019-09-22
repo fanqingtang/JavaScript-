@@ -68,3 +68,39 @@
   console.log(sameValue);
 
 }
+{
+  /**
+   *   一.javascript 有七种内置类型
+        1.空值(null);
+        2.未定义(undefined);
+        3.布尔值(boolean);
+        4.数字(number);
+        5.字符串(string);
+        6.对象(object);
+        7.符号(symbol ES6新增);
+
+        1.我们可以用typeof运算符来查看值得类型，他返回的是类型的字符串值。
+   * 
+   */
+
+    console.log(typeof undefined);  //'undefined'
+    console.log(typeof null);       // 'object   
+    console.log(typeof true);       // 'boolean'
+    console.log(typeof '123');      // 'string'
+    console.log(typeof 123);        // 'number'
+    console.log(typeof {});         // 'object'  
+    console.log(typeof Symbol());   //  'symbol'
+    console.log(typeof function a() {}); // 'function'
+    /***
+     * 1.这样看来，function(函数)也是Javascript的一个内置类型。然而差阅规范就会知道，它实际上是object的一个"字类型"。具体来说
+     * 函数是"可调用对象"，它有一个内部属性[[call]],该属性使其可以被调用。
+     * 2.函数不仅是对象，还可以拥有属性。例如
+     *  function a(b, c) {}
+        console.log(a.length);  //2
+       3.函数对象的length属性是其声明的参数的个数，因为该函数声明了两个命名参数，a和c，所以其length值为2 
+       4. typeof [1,2,3]  //'object' 数组也是对象。确切地说，它也是object的一个"子类型"
+     * 
+     */
+
+
+}
