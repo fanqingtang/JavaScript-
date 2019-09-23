@@ -17,7 +17,7 @@
     return fBound;
   }
 ```
-  这里获取数组的交集的方法
+  这里获取`数组`的`交集`的方法
 
   ``` javascript
     //获取数组得到的交集
@@ -53,4 +53,49 @@
       }
       return result;
     }
+  ```
+  这里获取`数组`的`差集`的方法
+
+  ``` javascript
+    //获取差集的第一种方法
+    function different1 (a, b) {
+      let arraya = a.filter(v => !b.includes(v));
+      let arrayb = b.filter(v => !a.includes(v));
+      let result = arraya.concat(arrayb);
+      return result;
+    }
+    //获取差集的第二种方法
+    function different2 (a, b) {
+      let newA = a.sort((a, b) => a - b).filter((item, i) => a.indexOf(item) == i);
+      let newB = b.sort((a, b) => a - b).filter((item, i) => b.indexOf(item) == i);
+      let result = newA.concat(newB).sort(a, b => a - b);
+      let diff = [];
+      for (let i = 0; i < result.length; i++) {
+        if (result[i] !== result[i+1]) {
+          diff.push(result[i]);
+        } 
+        else {
+          i++;
+        }
+      }
+    }
+    //获取差集的第三种方法
+    function different3 (a, b) {
+      let newA = [],
+          newB = [];
+      for (let i = 0; i < a.length; i++) {
+        let currentA = a[i];
+        if (b.indexOf(currentA) == -1) {
+          newA.push(currentA);
+        }
+      }
+      for (let j = 0; j < b.length; j++) {
+        let currentB = b[j];
+        if (a.indexOf(currentB) == -1) {
+          newB.push(currentB);
+        }
+      }
+      return newA.concat(newB);
+    }
+
   ```

@@ -50,23 +50,72 @@
     return result;
   }
   console.log(intersection(a, b));
-  */
 
-  function intersection (a, b) {
-    let result = [];
+    获取交集的第三种方法
+    function intersection (a, b) {
+      let result = [];
+      for (let i = 0; i < a.length; i++) {
+        let current = a[i];
+        if (b.indexOf(current) > -1) {
+          result.push(current);
+        }
+      }
+      for (let j = 0; j < result.length; j++) {
+        if (result[j] === result[j+1]) {
+          result.splice(j, 1);
+          j--;
+        }
+      }
+      return result;
+    }
+  */
+  /***
+   * 获取差集方法1
+    function different (a, b) {
+      let arraya = a.filter(v => !b.includes(v));
+      let arrayb = b.filter(v => !a.includes(v));
+      let result = arraya.concat(arrayb);
+      return result;
+    }
+    console.log(different(a, b));
+
+    获取差集方法2
+    function different (a, b) {
+      let newA = a.sort((a, b) => a - b).filter((item, i) => a.indexOf(item) == i);
+      let newB = b.sort((a, b) => a - b).filter((item, i) => b.indexOf(item) == i);
+      let result = newA.concat(newB).sort(a, b => a - b);
+      let diff = [];
+      for (let i = 0; i < result.length; i++) {
+        if (result[i] !== result[i+1]) {
+          diff.push(result[i]);
+        } 
+        else {
+          i++;
+        }
+      }
+      console.log(diff);
+    }
+    different(a, b);
+   * 
+   */
+  // 获取差集方法3
+  function different (a, b) {
+    let newA = [],
+        newB = [];
     for (let i = 0; i < a.length; i++) {
-      let current = a[i];
-      if (b.indexOf(current) > -1) {
-        result.push(current);
+      let currentA = a[i];
+      if (b.indexOf(currentA) == -1) {
+        newA.push(currentA);
       }
     }
-    for (let j = 0; j < result.length; j++) {
-      if (result[j] === result[j+1]) {
-        result.splice(j, 1);
-        j--;
+    for (let j = 0; j < b.length; j++) {
+      let currentB = b[j];
+      if (a.indexOf(currentB) == -1) {
+        newB.push(currentB);
       }
     }
-    return result;
+    return newA.concat(newB);
   }
-  console.log(intersection(a, b));
+  console.log(different(a, b));
 }
+
