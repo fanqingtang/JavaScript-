@@ -99,3 +99,63 @@
     }
 
   ```
+  这里获取`数组`的`并集`的方法
+  ``` javascript
+  // 获取数组的并集第一种方法
+  function union1 (a, b) {
+    let result = a.concat(b).sort((a, b) => a - b);
+    return result.filter((item, index) => result.indexOf(item) === index);
+  }
+
+  // 获取数组的并集第二种方法
+  function union2 (a, b) {
+    let result = [...a, ...b].sort((a, b) => a - b);
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] === result[i+1]) {
+        result.splice(i, 1);
+        i--;
+      }
+    }
+    return result;
+  }
+  // 获取数组的并集第三种方法
+  function union3 (a, b) {
+    let result = [...a, ...b].sort((a, b) => a - b);
+    let obj = {};
+    let newArr = [];
+    for (let i = 0; i < result.length; i++) {
+      let current = result[i];
+      if (!obj[current]) {
+        newArr.push(current);
+        obj[current] = 1;
+      }
+    }
+    return newArr;
+  }
+
+  ```
+  简单实现一个`深拷贝`
+
+  ``` javascript
+  function checkType (type) {   // 类型检查
+    return Object.prototype.toString.call(type).slice(8, -1);
+  }
+  function deepClone (params) {   // 深拷贝
+    let obj = null;
+    if (checkType(params) === 'Object') {
+      obj = {};
+    }
+    if (checkType(params) === 'Array') {
+      obj = [];
+    }
+    for (let key in params) {
+      if (checkType(params[key]) === 'Object' || checkType(params[key]) === 'Array') {
+        obj[key] = deepClone(params[key]);
+      } else {
+        obj[key] = params[key]
+      }
+    }
+    return obj;
+  }
+
+  ```
