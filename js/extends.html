@@ -140,5 +140,256 @@
               3. 原型链上下文丢失：子类和父类通过prototype声明的属性、方法都存在子类的prototype上 
       **/
     }
+    {
+      // 原型式基础(Object.create())
+      // 继承对象原型- Object.create()实现
+      // 模拟 Object.create()的实现
+
+      function cloneObject (obj) {
+        function F () {};
+        F.prototype = obj; // 将被继承的对象作为空函数的prototype
+        return new F();    // 返回new期间创建的新对象，此对象的原型为被基础的对象，通过原型链查找可以拿到被继承对象的属性
+      }
+      
+      let oldObj = {p: 1};
+      let newObj = cloneObject(oldObj);
+      oldObj.p = 2;
+      console.log('oldObj newObj', oldObj, newObj);
+
+      // 寄生式继承(封装继承过程)
+      // 创建一个仅用于封装继承过程的函数，该函数在内部以某种方式来增强对象，最后返回对象
+      function createAnother (original) {
+        let clone = cloneObject(original); //继承一个对象，返回新函数
+        // do something 以某种方式来增强对象
+        clone.some = function(){} //方式
+        clone.obkoro1 = '封装继承过程'; //属性
+        return clone;  // 返回这个对象
+      }
+
+      // 寄生组合式继承(call+ 寄生式封装);
+      // 寄生组合式继承原理:
+
+      /***
+       * 1. 使用借用构造函数(call)来继承父类this声明的属性、方法
+       * 2. 通过寄生式封装函数设置父类prototype为子类prototype的原型来继承父类的prototype声明的属性、方法。
+       * **/
+
+       function fatherFn (...arr) {
+          this.some = '父类的this属性';
+          this.params = arr; //父类的参数
+       }
+       fatherFn.prototype.fatherFnSome = '父类原型对象的属性或者方法';
+       function sonFn () {
+         fatherFn.call(this, '借用构造继承'); //核心1 借用构造继承：继承父类通过this声明属性和方法至子类实例的属性上
+         this.obkoro1 = '子类的this属性';
+       }
+       // 核心2 寄生式继承:封装了son.prototype对象原型式继承father.prototype的过程，并且增强了传入的对象。
+       function inheritPrototype (son, father) {
+          const fatherFnPrototype = Object.create(father.prototype) //原型式继承: 浅拷贝father.prototype对象 father.prototype为新对象的原型
+          son.prototype = fatherFnPrototype // 设置father.prototype为son.prototype的原型
+          son.prototype.constructor = son; // 修正constructor 指向
+       }
+       inheritPrototype(sonFn, fatherFn);
+       sonFn.prototype.sonFnSome = '子类原型对象的属性或者方法';
+       const sonFnInstance = new sonFn();
+       console.log('寄生组合式继承子类实例', sonFnInstance);
+
+
+       /**
+        * 寄生组合式继承相对于组合继承有如下优点:
+        * 1. 只调用一次父类fatherFn构造函数。
+        * 2. 避免在子类prototype上创建不必要多余的属性。
+        * 3. 使用原型式继承父类的prototype，保持了原型链上下文不变。
+        *    子类的prototype只有子类通过prototype声明的属性、方法和父类prototype上的属性泾渭分明。
+        *
+        * **/
+       // 保持constructor 指向的一致性；
+       // 因此每次重写函数的prototype都应该修正一下 constructor 的指向，以保持读取 constructor 行为的一致性。
+    }
+
+    {
+      //prototype  只有函数有prototype属性
+      let a = {};
+      let b = function () {};
+      console.log(a.prototype);
+      console.log(b.prototype);
+
+      // 可以用以下三句话来理解原型链
+      // 1. 每个对象都拥有一个原型对象。
+      // 2. 对象的原型可能也是继承其他原型对象。
+      // 3. 一层一层的，以此类推，这种关系就是原型链。
+
+      const proto = Object.getPrototypeOf(Object.prototype);
+      console.log(proto);
+
+
+      function foo () {
+        this.some = '222';
+        let ccc = 'ccc';
+        foo.obkoro1 = 'obkoro1';
+        foo.prototype.a = 'aaa';
+      }
+      foo.koro = '扣肉';
+      foo.prototype.test = 'test';
+      let foo1 = new foo();  // foo1上有哪些属性，这些属性分别挂载在哪个地方
+      foo.prototype.test = 'test2'  //重新赋值
+
+    }
+
+    {
+      function isType (data, type) {
+        const typeObj = {
+          '[object String]': 'string',
+          '[object Number]': 'number',
+          '[object Null]': 'null',
+          '[object Undefined]': 'undefined',
+          '[object Object]': 'object',
+          '[object Array]': 'array',
+          '[object Function]': 'function',
+          '[object Date]': 'date',
+          '[object RegExp]': 'regExp',
+          '[object Map]': 'map',
+          '[object Set]': 'set',
+          '[object HTMLDivElement]': 'dom',
+          '[object WeakMap]': 'weakMap',
+          '[object Window]': 'window',
+          '[object Error]': 'error',
+          '[object Arguments]': 'arguments'
+        }
+        let name = Object.prototype.toString.call(data); // 借用Object.prototype.toString() 获取数据类型
+        let typeName = typeObj[name] || '未知类型'; // 匹配数据类型
+        return typeName === type;
+      }
+
+      console.log(isType({}, 'object'));
+      console.log(isType('123', 'string'));
+      console.log(isType(123, 'number'));
+
+      const arr = [15, 6, 12, 13, 16];
+
+      console.log(Math.max.apply(Math,arr));
+      console.log(Math.min(...arr));
+    }
+
+    {
+      // 父类
+      function supFather(name) {
+        this.name = name;
+        this.colors = ['red', 'blue', 'green']; //复杂类型
+      }
+      supFather.prototype.sayName = function (age) {
+        console.log(this.name, 'age');
+      };
+
+      // 子类
+      function sub(name, age) {
+        // 借用父类的方法；修改它的this指向，赋值父类的构造函数里面方法、属性到子类上
+        supFather.call(this, name);
+        this.age = age;
+      }
+      // 重写子类的prototype，修正constructor指向
+      function inheritPrototype(sonFn, fatherFn) {
+        sonFn.prototype = Object.create(fatherFn.prototype); // 继承父类的属性以及方法
+        sonFn.prototype.constructor = sonFn;  // 修正constructor指向到继承的那个函数上
+      }
+      inheritPrototype(sub, supFather);
+      sub.prototype.sayAge = function () {
+        console.log(this.age, 'foo');
+      };
+      // 实例化子类，可以在实例上找到属性、方法
+      const instance1 = new sub('OBKoro1', 24);
+      const instance2 = new sub('小明', 18);
+      instance1.colors.push('black');
+      console.log(instance1);
+      console.log(instance2);
+
+    }
+    {
+      // 手写一个实现call方法
+      /***
+       *  思路 
+       * 1. 根据call的规则设置上下文对象，也就是this的指向。
+       * 2. 通过设置context的属性，将函数的this指向隐私绑定到context上
+       * 3. 通过隐式绑定执行函数并传递参数。
+       * 4. 删除临时属性，返回函数执行结果。
+       * 
+       * **/
+
+       Function.prototype.myCall = function (context, ...arr) {
+          if (context === null || context === undefined) {
+            // 指定为null 和 undefined 的this 值会自动指向全局对象（浏览器中为 window）
+            context = window;
+          } else {
+            context = Object(context); //值为原始值(数字，字符串，布尔值)的 this 会指向该原始值得实例对象
+          }
+          const specialPrototype = Symbol('特殊属性Symbol'); //用于临时储存函数
+          context[specialPrototype] = this; // 函数的this指向隐式绑定到context上
+          let result = context[specialPrototype](...arr); // 通过隐式绑定执行函数并传递参数
+          delete context[specialPrototype]; // 删除上下文对象的属性
+          return result; // 返回函数执行结果
+       }
+
+       let obj = {
+         name: 'fqt'
+       };
+       function callFn (params) {
+         console.log(this.name, params);
+       }
+       console.log(callFn.myCall(obj, '参数'));
+    }
+
+    // 你能手写实现一个apply吗
+    /***
+     * 思路
+     * 1. 传递给函数的参数处理，不太一样，其他部分跟call一样。
+     * 2. apply接受第二个参数为类数组对象，这里用了JavaScript全威指南中判断是否为类数组对象的方法。
+     * 
+     * 
+     * **/
+
+    {
+      Function.prototype.myApp = function (context) {
+        if (context === null || context === undefined) {
+            context = window // 指定为null和undefined 的this值会自动指向全局对象（浏览器中为window）
+        } else {
+          context = Object(context); // 值为原始值（数字，字符串，布尔值）的this会指向该原始值得实例对象
+        }
+
+        function isArrayLike(o) {
+          if (o && typeof o === 'object' && isFinite(o.length)&& o.length >= 0 && o.length === Math.floor(o.length) && o.length < 4294967296) {
+            return true;
+          } else {
+            false;
+          }
+        }
+        const specialPrototype = Symbol('特殊属性Symbol'); // 用于临时储存函数
+        context[specialPrototype] = this; // 隐式绑定this指向到context上
+        var args = arguments[1]; // 获取参数数组
+        let result;
+
+        // 处理传进来的第二个参数
+        if (args) {
+          // 是否传递第二个参数
+          if (!Array.isArray(args) && !isArrayLike(args)) {
+            throw new TypeError('myApple 第二个参数不为数组并且不为类数组对象抛出错误');
+          } else {
+            args = Array.from(args); // 转为数组
+            result = context[specialPrototype](args); // 执行函数并展开数组，传递函数参数
+          }
+        } 
+        else {
+          result = context[specialPrototype](); //执行函数
+        }
+        delete context[specialPrototype]; // 删除上下文对象的属性
+        return result;
+     }
+        let obj = {
+          name: 'fqt'
+        };
+       function applyFn (params) {
+         console.log(this.name, params);
+       }
+      console.log(applyFn.myApp(obj, [1,2,3,4]));
+    }
 </script>
 </html>
