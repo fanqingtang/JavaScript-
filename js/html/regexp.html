@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>正则</title>
+</head>
+<body>
+  
+</body>
+
+<script>
+  let num = 122939939393;
+  function commafy(num){
+  	return num && num
+  		.toString()
+  		.replace(/(\d)(?=(\d{3})+\b)/g, function($1, $2){
+  			return $2 + ',';
+  		});
+  }
+  console.log(commafy(num));
+
+  let phone = '13632607031';
+
+  function starPhone (str) {
+    let start = str.substr(0,3),
+        end = str.substr(str.length - 3);
+        
+    return `${start}*****${end}`;    
+  }
+  console.log(starPhone(phone));
+
+  function starPhone1 (str) {
+    let reg = /(\d{3})\d{4}(\d{4})/
+    return str.replace(reg, '$1****$2');
+  }
+
+  console.log(starPhone1(phone));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</html>
