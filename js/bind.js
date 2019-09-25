@@ -187,4 +187,91 @@
   }
   console.log(deepClone(objDemo));
 }
+{
+  let arr = [1, 2, 3, 4, 5];  // for of 循环数组
+  let obj = {
+    name: 'fqt',
+    age: 27,
+    address: '江西 九江'
+  };
+  Object.defineProperty(obj,Symbol.iterator,{
+    enumberable:false,
+    configurable:false,
+    writable:false,
+    value:function(){
+      var _this=this;
+      var nowIndex=-1;
+      var key=Object.keys(_this);
+      return {
+        next:function(){
+          nowIndex++;
+          return {
+            value:_this[key[nowIndex]],
+            done:(nowIndex+1>key.length)
+          }
+        }
+      }
+    }
+  })
 
+  for (let value of obj) {  
+    console.log(value);
+  }
+}
+
+{
+  let arr = [1, 2, 3, 4, 5];   // forEach 不能中断循环
+
+  arr.forEach(function (value) {
+    if (value === 3) {
+      return;
+    }
+    console.log(value);
+  });
+
+  // for...in 循环实际是为循环可枚举（enumerable）对象而设计的
+
+  let obj = {a: 1, b: 2, c: 3};
+
+  for (let prop in obj) {
+    console.log(`obj.${prop}=${obj[prop]}`);
+  }
+
+  // for...of 循环  JavaScript6里引入了一种新的循环方法，它就是 for...of 循环，它既比传统的 for 循环简洁，同时弥补了 forEach 和 for-in 循环的短板
+
+  for (let val of arr) {
+    console.log(val);
+  }
+
+}
+
+{
+  let obj = {
+    name: 'fqt',
+    age: 27,
+    address: '江西 九江'
+  };
+
+  Object.defineProperty(obj,Symbol.iterator, {
+    enumberable: false,
+    configurable: false,
+    writable: false,
+    value: function () {
+      let lastIndex = -1;
+      let _this = this;
+      let key = Object.keys(_this);
+      return {
+        next: function () {
+          lastIndex ++;
+          return {
+            value: _this[key[lastIndex]],
+            done: (lastIndex+1) > key.length
+          }
+        }
+      }
+    }
+  });
+  for (let value of obj) {  
+    console.log(value);
+  }
+}
