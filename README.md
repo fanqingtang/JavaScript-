@@ -159,3 +159,65 @@
   }
 
   ```
+  javascript 里的循环方法: forEach, for...in, for...of;
+
+  ``` javascript
+  // forEach 循环不能用break和return 中断
+  let arr = [1, 2, 3, 4];
+
+  arr.forEach(function (val) {
+    if (val === 3) {
+      return;
+    }
+    console.log(val); // 1,2,4
+  });
+
+  // for...in 循环实际是为循环可枚举（enumerable）对象而设计的 也能循环一个数组，但是不推荐，因为数组的index为数值为指标。
+
+  let obj = {a: 1, b:2, c:3};
+  
+  for (let key in obj) {
+    console.log(`obj.${key}=${obj[key]}`);
+  }
+
+  for (let val in arr) {
+    console.log(arr[val]);
+  }
+
+  // for...of JavaScript6里引入了一种新的循环方法，它既比传统的 for 循环简洁，同时弥补了 forEach 和 for-in 循环的短板
+
+  // 循环数组
+  for(let prop of arr) {
+    console.log(prop);
+  }
+  // 循环对象
+  let obj = {
+    name: 'fqt',
+    age: 27,
+    address: '江西 九江'
+  };
+
+  Object.defineProperty(obj,Symbol.iterator, {
+    enumberable: false,
+    configurable: false,
+    writable: false,
+    value: function () {
+      let lastIndex = -1;
+      let _this = this;
+      let key = Object.keys(_this);
+      return {
+        next: function () {
+          lastIndex ++;
+          return {
+            value: _this[key[lastIndex]],
+            done: (lastIndex+1) > key.length
+          }
+        }
+      }
+    }
+  });
+  for (let value of obj) {  
+    console.log(value);
+  }
+
+  ```
