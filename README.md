@@ -221,3 +221,127 @@
   }
 
   ```
+  javascript `事件委托`
+  ``` javascript
+  // 假如有如下列表需要帮每个li都绑定事件
+  <ul id='todo-list'>
+    <li>列表一</li>
+    <li>列表二</li>
+    <li>列表三</li>
+    <li>列表四</li>
+    <li>列表五</li>
+    <li>列表六</li>
+  </ul>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    let todoList = document.getElementById('todo-list');
+    todoList.addEventListener('click', function(e){
+        let event = e || window.event;   // window.event 是兼容ie浏览器
+        let target = event.target || event.srcElement  // event.srcElement 是兼容ie浏览器
+        if (target.nodeName.toLowerCase() === 'li') {
+          console.log(target);
+        }
+    });
+  })
+
+  ```
+  `闭包`
+  ``` javaScript
+  // 3s之后打印每个列表的索引
+  let arr = [1,2,3,4,5,6];
+
+  for (var i = 0; i < arr.length; i++) {
+    setTimeout(function () {
+      console.log(`索引值为: ${i}`);  // 最后打印索引值为 6 个 6
+    }, 3000)
+  }
+  //原因是因为setTimeout 函数创建了一个可以访问其外部作业域的闭包，该作用域是包含索引 i 的循环。经过 3 秒后，执行该函数并打印出 i 的值，该值再循环结束时为 6。并且循环最终停止在 6 。
+
+  // 正确的解这道题 1
+  for (let i = 0; i < arr.length; i++) {
+    setTimeout(function () {
+      console.log(`索引值为: ${i}`);  // 最后打印索引值为 0, 1, 2, 3, 4, 5, 6
+    }, 3000)
+  }
+
+  // 正确的解这道题 2
+  for (var i = 0; i < arr.length; i++) {
+    setTimeout(function (i) {
+      console.log(`索引值为: ${i}`);  // 最后打印索引值为 0 ,1, 2, 3, 4, 5, 6
+    }.bind(window, i), 3000)
+  }
+  // 正确的解这道题 3
+  for (var i = 0; i < arr.length; i++) {
+    (function (i) {
+      setTimeout(function () {
+        console.log(`索引值为: ${i}`); // 最后打印索引值为 0 ,1, 2, 3, 4, 5, 6
+      },3000);
+    })(i)
+  }
+  ```
+  事件的`防抖（debounce）`与 `节流（throttle）`
+
+  ``` javascript
+  function throttle (fn, interval) { // 节流
+    let last = 0;  // last 为上一次触发的回调时间
+    return function () {  // 将throttle的处理结果当函数返回
+      // 保留调用时this 上下文
+      let context = this;
+      //  保留调用时传的参数
+      let args = arguments;
+      // 记录本次触发的回调时间
+      let now = new Date().getTime();
+      // 判断本次触发的时间和上次触发的时间差是否大于等于时间间隔阔值
+      if (now - last >= interval) {
+        // 如果本次触发的时间和上次触发的时间间隔大于等于时间间隔阔值就触发回调方法
+        last = now;
+        fn.apply(context, args)
+      }
+    }
+  }
+
+  function debounce (fn, delay) { // 防抖
+    let timer = null; // 定时器
+    return function () { // 将debounce的处理结果当函数返回
+      let context = this; // 保留调用时 this 上下文
+      let args = arguments; // 保留调用时传的参数
+      if (timer) {  // 每次事件被触发时，都去清除之前的旧定时器
+        clearTimeout(timer);
+      }
+      timer = setTimeout(function () {  // 开一个新的定时器
+        fn.apply(context, args);
+      }, delay)
+    }
+
+  }
+
+
+  function finalThrottle (fn, delay) {  // 节流和防抖相结合
+    // last 为上一次触发回调的时间，timer是定时器
+    let last = 0, timer = null;
+    // 将throttle处理结果当作函数返回
+    return function () {
+      // 保留调用时的this上下文
+      let context = this;
+       // 保留调用时传入的参数
+      let args = arguments;
+      // 记录本次触发的回调时间
+      let now = + new Date();
+      // 判断上次触发的时间和本次触发的时间差是否小于时间间隔阔值
+      if (now - last < delay) {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          last = now;
+          fn.apply(context, args);
+        }, delay)
+      } else { // 如果时间间隔超出了我们设定的时间间隔阔值，那就不等了，无论如何要反馈给用户一次响应
+        last = now;
+        fn.apply(context, args);
+      }
+    }
+  }
+  const better_scroll = finalThrottle(()=> console.log(`触发了滚动事件`), 5000);
+  document.addEventListener('scroll', better_scroll);
+
+  ```
+
