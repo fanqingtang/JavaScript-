@@ -418,4 +418,33 @@
   }
 
   ```
+  数组 `扁平化`
 
+  ``` javascript
+  // 数组扁平化方法1
+  function flat (arr) {
+    let tmp = [];
+    for (let i = 0; i < arr.length; i++) {
+      if (Array.isArray(arr[i])) {
+        tmp = tmp.flat(arr[i]);
+      } else {
+        tmp.push(arr[i]);
+      }
+    }
+    return tmp;
+  }
+
+  // 数组扁平化方法2
+  function flat2 (arr) {
+    return arr.reduce(function(prev, next) {
+      return prev.concat(Array.isArray(next) ? flat2(next) : next);
+    },[])
+  }
+  // 数组扁平化方法3
+
+  function flat3 (arr) {
+    return arr.flat(Infinity);
+  }
+
+
+  ```
