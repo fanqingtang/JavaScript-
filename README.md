@@ -344,4 +344,78 @@
   document.addEventListener('scroll', better_scroll);
 
   ```
+  数组的 `冒泡排序，快速排序，选择排序，插入排序`
+
+  ``` javascript
+  // 冒泡排序
+  let arr = [1,2,3,2,6,7,4,3,6,5,4,3,2,67];
+  function bubbling (arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+      for (let j = 0; j < arr.length - 1 -i; j++) {
+        if (arr[j] > arr[j+1]) {
+          let temp = arr[j+1];
+          arr[j+1] = arr[j];
+          arr[j] = temp;
+
+
+        }
+      }
+    }
+    return arr;
+  }
+  // 快速排序
+  function fast (arr) {
+    if (arr.length < 1) { return arr}
+    let index = parseInt(arr.length / 2);
+    let middle = arr[index];
+    let left = [];
+    let right = [];
+    for (let i = 0; i < arr.length; i++) {
+      if (middle === arr[i]) {
+        continue;
+      }
+      if (middle < arr[i]) {
+        left.push(arr[i]);
+      }
+      if (middle > arr[i]) {
+        right.push(arr[i]);
+      }
+    }
+    return fast(left).concat(middle, fast(right));
+  }
+
+  // 选择排序
+  function selectSort (arr) {
+    for (let i = 0; i < arr.length; i++) {
+      let min = arr[i];  //默认最小值
+      let index = i;    // 默认最小索引
+      for (let j = i+1; j < arr.length; j++) {
+        if (min > arr[j]) {
+          index = j;
+          min = arr[index];
+        }
+      }
+      let tmp = arr[i];
+      arr[i] = arr[index];
+      arr[index] = tmp;
+    }
+    return arr;
+  }
+
+  // 插入排序
+
+  function insertSort (arr) {
+    for (let i = 0; i < arr.length; i++) {
+      let j = i;
+      let tmp = arr[i];
+      while ( j > 0 && arr[j-1] > tmp) {
+        arr[j] = arr[j-1];
+        j--;
+      }
+      arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  ```
 
